@@ -43,10 +43,13 @@ jobs:
 
       - name: Smoke test
         run: |
-          docker run -d --name t -p 5432:5432 $IMAGE:${{ inputs.variant }}-${{ matrix.arch }}
-          for i in $(seq 1 60); do docker exec t pg_isready -U postgres && break; sleep 2; done
-          docker exec t psql -U postgres -d demo -c "SELECT bookings.version();" -c "SELECT count(*) AS flights FROM bookings.flights;" -c "SELECT * FROM bookings.airports LIMIT 3;"
-          docker rm -f t
+          docker run -d --name smoke -p 5432:5432 $IMAGE:${{ inputs.variant }}-${{ matrix.arch }}
+          for i in $(seq 1 60); do
+            docker exec smoke pg_isready -U postgres && break
+            sleep 2
+          done
+          docker exec smoke psql -U postgres -d demo -c "SELECT bookings.version();" -c "SELECT count(*) AS flights FROM bookings.flights;" -c "SELECT * FROM bookings.airports LIMIT 3;"
+          docker rm -f smoke
 
       - uses: docker/login-action@v3
         with:
