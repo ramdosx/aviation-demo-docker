@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       variant:
-        description: "Размер базы: 2y, 1y, 6m или 3m"
+        description: "Размер базы: 3m, 6m, 1y или 2y"
         required: true
-        default: "2y"
+        default: "3m"
 
 env:
   IMAGE: ramdosx/aviation-demo
@@ -71,6 +71,6 @@ jobs:
         run: |
           V=${{ inputs.variant }}
           docker buildx imagetools create -t $IMAGE:$V $IMAGE:$V-amd64 $IMAGE:$V-arm64
-          if [ "$V" = "2y" ]; then
+          if [ "$V" = "3m" ]; then
             docker buildx imagetools create -t $IMAGE:latest $IMAGE:$V-amd64 $IMAGE:$V-arm64
           fi

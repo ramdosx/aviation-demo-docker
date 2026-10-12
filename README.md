@@ -1,16 +1,21 @@
-# Демо-база «Авиаперевозки» в Docker — для бесплатного курса по SQL
+# Демо-база «Авиаперевозки» в Docker — для курса по SQL
 
 Готовый образ PostgreSQL 17 с уже загруженной учебной базой
-«Авиаперевозки» от Postgres Pro. Ничего не нужно скачивать и импортировать вручную.
+«Авиаперевозки» от Postgres Pro. Ничего не нужно скачивать и
+импортировать вручную — база ставится одной командой.
 
 ## Запуск — одна команда
+
 ```
-docker run -d --name sql-course -p 5432:5432 ramdosx/aviation-demo:2y
+docker run -d --name sql-course -p 5432:5432 ramdosx/aviation-demo:3m
 ```
+
 Нужен установленный Docker Desktop: https://www.docker.com/products/docker-desktop/
-Образ большой (база за 2 года), первое скачивание займёт время.
+
+Первый запуск скачивает образ (~0,8 ГБ), дальше база стартует за секунды.
 
 ## Подключение
+
 | Параметр | Значение |
 |---|---|
 | Host | `localhost` |
@@ -20,25 +25,36 @@ docker run -d --name sql-course -p 5432:5432 ramdosx/aviation-demo:2y
 | Password | `demo` |
 
 Строка подключения: `postgresql://postgres:demo@localhost:5432/demo`
-Удобная программа для запросов — DBeaver Community: https://dbeaver.io/download/
 
-Проверка:
+Проверка, что всё работает:
+
 ```sql
 SELECT bookings.version();
 SELECT * FROM airports LIMIT 10;
 ```
 
-## Управление
+Удобная программа для запросов — DBeaver Community: https://dbeaver.io/download/
+
+## Управление контейнером
+
 - Остановить: `docker stop sql-course`
 - Запустить снова: `docker start sql-course`
 - Удалить: `docker rm -f sql-course`
-- Порт 5432 занят? Запускайте с `-p 5433:5432` и подключайтесь к порту 5433.
+- Порт 5432 занят? Запустите с другим портом: `docker run -d --name sql-course -p 5433:5432 ramdosx/aviation-demo:3m` и подключайтесь к 5433.
 
-## Теги
-- `2y` / `latest` — база за 2 года (~11 ГБ)
-- при необходимости могут появиться `1y`, `6m`, `3m`
+## Варианты базы (теги)
+
+| Тег | Данных | Размер образа |
+|---|---|---|
+| `3m` / `latest` | 3 месяца | ~0,8 ГБ |
+| `6m` | 6 месяцев | ~1,5 ГБ |
+| `1y` | 1 год | ~3 ГБ |
+| `2y` | 2 года | ~5 ГБ |
+
+Для курса достаточно `3m`. Образы мультиархитектурные (Intel/AMD и Apple Silicon).
 
 ## Лицензия и источник
+
 Данные: демонстрационная база «Авиаперевозки» © Postgres Professional,
 https://postgrespro.ru/education/demodb, лицензия MIT (см. `NOTICE.md`).
 Скрипты сборки: MIT (см. `LICENSE`).
